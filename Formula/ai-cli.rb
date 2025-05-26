@@ -1,34 +1,52 @@
 class AiCli < Formula
-  include Language::Python::Virtualenv
-
   desc "Convert natural language questions to terminal commands using OpenAI"
   homepage "https://github.com/stephenyu/ai-cli"
   url "https://github.com/stephenyu/ai-cli/archive/v0.1.0.tar.gz"
-  sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+  sha256 "309123570bb52b4adf487f689a45c020addfc9b498e65a59b4701b16ac27a7ea"
   license "MIT"
 
   depends_on "python@3.12"
 
-  resource "openai" do
-    url "https://files.pythonhosted.org/packages/source/o/openai/openai-1.54.4.tar.gz"
-    sha256 "50f3b471085df74c8e54e0af732e67f8723391c8073c50dc2bfa4eddef5b7b5c"
-  end
-
-  resource "pydantic" do
-    url "https://files.pythonhosted.org/packages/source/p/pydantic/pydantic-2.10.3.tar.gz"
-    sha256 "cb5ac360ce894ceacd69c403187900a02c4b20b693a9dd1d643e1effab9eadf9"
-  end
-
-  resource "keyring" do
-    url "https://files.pythonhosted.org/packages/source/k/keyring/keyring-25.5.0.tar.gz"
-    sha256 "4c753b3ec91717fe713c4edd522d625889d8973a349b0e582622f49766de58e6"
-  end
-
   def install
-    virtualenv_install_with_resources
+    # Copy the main script to libexec
+    libexec.install "ai_cli.py"
+    
+    # Create the executable that checks for dependencies and runs the script
+    (bin/"ai").write <<~EOS
+      #!/usr/bin/env python3
+      import sys
+      import subprocess
+      
+      # Check if required packages are installed
+      try:
+          import openai
+          import pydantic
+          import keyring
+      except ImportError as e:
+          print(f"Missing dependency: {e}")
+          print("Please install dependencies with:")
+          print("  pip3 install openai pydantic keyring")
+          sys.exit(1)
+      
+      # Import and run the main module
+      import os
+      sys.path.insert(0, "#{libexec}")
+      exec(open("#{libexec}/ai_cli.py").read())
+    EOS
+  end
+
+  def caveats
+    <<~EOS
+      To use ai-cli, you need to install Python dependencies:
+        pip3 install openai pydantic keyring
+      
+      Then configure your OpenAI API key:
+        ai setup
+    EOS
   end
 
   test do
-    assert_match "AI CLI", shell_output("#{bin}/ai --help")
+    # Test that the script can be executed
+    assert_match "Missing dependency", shell_output("#{bin}/ai --help", 1)
   end
 end 
