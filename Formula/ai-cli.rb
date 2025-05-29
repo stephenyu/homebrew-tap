@@ -3,8 +3,8 @@ class AiCli < Formula
 
   desc "Convert natural language questions to terminal commands using OpenAI"
   homepage "https://github.com/stephenyu/ai-cli"
-  url "https://github.com/stephenyu/ai-cli/archive/refs/tags/v0.2.1.tar.gz"
-  sha256 "b6c73f9e389757374f8a4d16685000ff6aca21aeb696ef45fcac10dc7a7c2fe7"  # This will need to be updated with the actual SHA256
+  url "https://github.com/stephenyu/ai-cli/archive/refs/tags/v0.3.0.tar.gz"
+  sha256 "5aaddd89044dc8e2fda68b40df17de2fce7c0755ace5934e984ebd4ffd7d5bfd"  # This will need to be updated with the actual SHA256
   license "MIT"
 
   depends_on "python@3.13"
@@ -80,8 +80,8 @@ class AiCli < Formula
   end
 
   resource "openai" do
-    url "https://files.pythonhosted.org/packages/3f/19/6b09bb3132f7e1a7a2291fd46fb33659bbccca041f863abd682e14ba86d7/openai-1.82.0.tar.gz"
-    sha256 "b0a009b9a58662d598d07e91e4219ab4b1e3d8ba2db3f173896a92b9b874d1a7"
+    url "https://files.pythonhosted.org/packages/5e/53/fd5318cd79202744711c120f008d9bd987eacc063b15910a820bc9b9f40e/openai-1.82.1.tar.gz"
+    sha256 "ffc529680018e0417acac85f926f92aa0bbcbc26e82e2621087303c66bc7f95d"
   end
 
   resource "pydantic" do
